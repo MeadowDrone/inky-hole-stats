@@ -11,9 +11,6 @@ from font_fredoka_one import FredokaOne
 # Uptime
 uptime = os.popen('uptime -p').read()[3:-1]
 uptime_stripped = uptime[:uptime.index(',')]
-'''uptime_hours = uptime[uptime.index(',')+2:]
-uptime_hours = uptime_hours[:uptime_hours.index(',')]
-uptime_full = f'{uptime_days}, {uptime_hours}'''
 
 # Free RAM in MB
 ram_mb = int(psutil.virtual_memory().available) / 1024 / 1024
@@ -28,9 +25,6 @@ disk = psutil.disk_usage('/').free
 disk_gb = round(disk / 1024 / 1024 / 1024, 2)
 disk_str = str(disk_gb) + "GB"
 
-# Set current directory
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
 # Pi-hole API data
 try:
     with urllib.request.urlopen('http://192.168.1.220/admin/api.php') as f:
@@ -41,10 +35,9 @@ try:
 except Exception:
     status = 'disabled'
 
+# Initialise Inky pHAT display
 small_font = ImageFont.truetype(FredokaOne, 16)
-font = ImageFont.truetype(FredokaOne, 20)
 large_font = ImageFont.truetype(FredokaOne, 40)
-
 inky_display = InkyPHAT("red")
 inky_display.set_border(inky_display.WHITE)
 img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
@@ -78,5 +71,4 @@ else:
     draw.text((110, 82), temp_str, inky_display.RED, small_font)
 
 inky_display.set_image(img)
-
 inky_display.show()
